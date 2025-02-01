@@ -7,7 +7,6 @@ import {
 } from '@nestjs/websockets';
 import { JwtService } from '@nestjs/jwt';
 import { Socket, Server } from 'socket.io';
-import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 import { ChatService } from 'src/chat/chat.service';
 import { CreateChatDto } from 'src/chat/dto/create-chat.dto';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
@@ -37,7 +36,7 @@ export class AppGateway {
   @SubscribeMessage('create-chat')
   async handleCreateChat(@MessageBody() body: CreateChatDto) {
     const chat = await this.chatService.create(body);
-    this.emitSocketEvent('on-message', chat);
+    this.emitSocketEvent('on-create-chat', chat);
   }
 
   @SubscribeMessage('send-message')
