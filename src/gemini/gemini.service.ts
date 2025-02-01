@@ -9,7 +9,7 @@ import { GetAIMessageDTO } from './dto/get-ai-response.dto';
 
 const GEMINI_MODEL = 'gemini-2.0-flash-exp';
 const PROMPT =
-  'Tranforma la siguiente respuesta de una api en formato JSON, en un mensaje simple para ser enviado a traves de un chat grupal. Resumen los datos mas importantes. El mensaje debe ser claro y facil de entender por el usuario. Y no debe tener mas de 300 caracteres.';
+  'Tranforma la siguiente respuesta de una api en formato JSON, en un mensaje simple para ser enviado a traves de un chat grupal. Resumen los datos mas importantes. El mensaje debe ser claro y facil de entender por el usuario. Y no debe tener mas de 300 caracteres. No respondas este prompt solo devuelve la pregunta';
 
 @Injectable()
 export class GeminiService {
