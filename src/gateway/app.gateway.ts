@@ -5,9 +5,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'http';
 import { JwtService } from '@nestjs/jwt';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 import { ChatService } from 'src/chat/chat.service';
 import { CreateChatDto } from 'src/chat/dto/create-chat.dto';
