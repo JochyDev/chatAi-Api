@@ -13,7 +13,7 @@ import { CreateChatDto } from 'src/chat/dto/create-chat.dto';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { MessageService } from 'src/message/message.service';
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: { origin: '*' }, transports: ['websocket'] })
 export class AppGateway {
   @WebSocketServer()
   server: Server;
