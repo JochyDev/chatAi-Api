@@ -13,7 +13,7 @@ import { CreateChatDto } from 'src/chat/dto/create-chat.dto';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { MessageService } from 'src/message/message.service';
 
-@WebSocketGateway({ cors: { origin: '*' }, transports: ['websocket'] })
+@WebSocketGateway({ cors: { origin: '*' } })
 export class AppGateway {
   @WebSocketServer()
   server: Server;
@@ -26,11 +26,8 @@ export class AppGateway {
 
   async handleConnection(client: Socket) {
     const token = client.handshake.headers.authentication as string;
-    let payload: JwtPayload;
-
     try {
-      payload = await this.jwtService.verify(token);
-      return payload;
+      await this.jwtService.verify(token);
     } catch (error) {
       client.disconnect();
       return;
