@@ -63,18 +63,17 @@ export class MessageService {
 
     const apiName = consult.split(' ')[0];
 
-    const apiUrl = this.apiRoutes[apiName].url;
+    const apiData = this.apiRoutes[apiName];
 
-    if (!apiUrl) {
+    if (!apiData) {
       throw new BadRequestException('No se encontró una API para la consulta.');
     }
 
     const queryText = consult.split(' ')[1];
 
-    const urlToConsult = apiUrl.replace(':name', queryText);
+    const apiUrl = apiData.url.replace(':name', queryText);
 
-    // Hacer la solicitud a la API correspondiente
-    return this.fetchFromApi(chatId, urlToConsult);
+    return this.fetchFromApi(chatId, apiUrl);
   }
 
   private async fetchFromApi(chatId: string, api: string) {

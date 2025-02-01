@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
@@ -29,8 +30,7 @@ export class AppGateway {
     let payload: JwtPayload;
 
     try {
-      payload = this.jwtService.verify(token);
-      console.log('client connected');
+      payload = await this.jwtService.verify(token);
       return payload;
     } catch (error) {
       client.disconnect();
@@ -41,27 +41,41 @@ export class AppGateway {
   @SubscribeMessage('create-chat')
   async handleCreateChat(@MessageBody() body: CreateChatDto) {
     const chat = await this.chatService.create(body);
-    this.emitOnCreateChat(chat);
+    this.emitSocketEvent('on-message', chat);
   }
 
   @SubscribeMessage('send-message')
-  async handleSendMessage(@MessageBody() data: CreateMessageDto) {
-    const message = await this.messageService.create(data);
-    this.emitOnMessage(message);
+  async handleSendMessage(
+    @MessageBody() data: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      const message = await this.messageService.create(data);
+      this.emitSocketEvent('on-message', message);
+    } catch (error) {
+      this.emitOnError(client, error);
+    }
   }
 
   @SubscribeMessage('on-query')
-  async handleQuery(@MessageBody() data: CreateMessageDto) {
-    const { chat, content } = data;
-    const message = await this.messageService.processQuery(chat, content);
-    this.emitOnMessage(message);
+  async handleQuery(
+    @MessageBody() data: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      const { chat, content } = data;
+      const message = await this.messageService.processQuery(chat, content);
+      this.emitSocketEvent('on-message', message);
+    } catch (error) {
+      this.emitOnError(client, error);
+    }
   }
 
-  emitOnCreateChat(chat) {
-    this.server.emit('on-create-chat', chat);
+  emitSocketEvent(eventName, chat) {
+    this.server.emit(eventName, chat);
   }
 
-  emitOnMessage(message) {
-    this.server.emit('on-message', message);
+  emitOnError(client: Socket, message) {
+    client.emit('on-error', message);
   }
 }

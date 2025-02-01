@@ -24,12 +24,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         };
       },
     }),
-    // JwtModule.register({
-    //   secret: process.env.JWT_SECRET || 'secretKey',
-    //   signOptions: { expiresIn: '4h' },
-    // }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
+  exports: [JwtStrategy, PassportModule, JwtModule],
 })
 export class AuthModule {}
