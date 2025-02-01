@@ -7,7 +7,7 @@ import { MessageModule } from './message/message.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppGatewayModule } from './gateway/app.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GeminiModule } from './gemini/gemini.module';
 // T2UorDxfkGnSvJkl
 @Module({
@@ -15,9 +15,13 @@ import { GeminiModule } from './gemini/gemini.module';
     AuthModule,
     ChatModule,
     MessageModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://root:root@cluster0.x3rm9.mongodb.net/chatAi',
-    ),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     AppGatewayModule,
     GeminiModule,
