@@ -12,7 +12,6 @@
 - **Mongoose** - ODM para MongoDB
 - **Socket.IO** - Comunicación en tiempo real
 - **JWT (JSON Web Token)** - Autenticación segura
-- **Swagger** - Documentación interactiva de API
 - **Axios** - Peticiones HTTP
 
 ## 🚀 Instalación
@@ -38,6 +37,11 @@ JWT_SECRET=tu_secreto
 ```bash
 npm run start:dev
 ```
+
+# Para consultar las api externas puede escribir en el chat
+### /query rickAndMorty rick
+### /query pokemon ditto
+### /query fakeStore jewelery
 
 
 📄 Licencia
