@@ -12,6 +12,12 @@ import { CreateChatDto } from 'src/chat/dto/create-chat.dto';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { MessageService } from 'src/message/message.service';
 
+enum EVENT_NAME {
+  OnCreateChat = 'on-create-chat',
+  OnMessage = 'on-message',
+  OnError = 'on-error',
+}
+
 @WebSocketGateway({ cors: { origin: '*' } })
 export class AppGateway {
   @WebSocketServer()
@@ -36,7 +42,7 @@ export class AppGateway {
   @SubscribeMessage('create-chat')
   async handleCreateChat(@MessageBody() body: CreateChatDto) {
     const chat = await this.chatService.create(body);
-    this.emitSocketEvent('on-create-chat', chat);
+    this.emitSocketEvent(EVENT_NAME.OnCreateChat, chat);
   }
 
   @SubscribeMessage('send-message')
@@ -46,7 +52,7 @@ export class AppGateway {
   ) {
     try {
       const message = await this.messageService.create(data);
-      this.emitSocketEvent('on-message', message);
+      this.emitSocketEvent(EVENT_NAME.OnMessage, message);
     } catch (error) {
       this.emitOnError(client, error);
     }
@@ -60,7 +66,7 @@ export class AppGateway {
     try {
       const { chat, content } = data;
       const message = await this.messageService.processQuery(chat, content);
-      this.emitSocketEvent('on-message', message);
+      this.emitSocketEvent(EVENT_NAME.OnMessage, message);
     } catch (error) {
       this.emitOnError(client, error);
     }
@@ -71,6 +77,6 @@ export class AppGateway {
   }
 
   emitOnError(client: Socket, message) {
-    client.emit('on-error', message);
+    client.emit(EVENT_NAME.OnError, message);
   }
 }
